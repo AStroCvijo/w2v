@@ -1,42 +1,27 @@
 import numpy as np
+import random
 
-from data.dataset import load_data, make_vocabulary, subsampling, build_noise_dist
+from data.dataset import load_data, make_vocabulary, compute_keep_prob, build_noise_dist
 from model.model import build_model, train, nearest_neighbours
 from utils.args import parse_args
+from utils.checkpoint import save_final
 
 
 if __name__ == "__main__":
 
-    # Parse arguments
     args = parse_args()
 
-    # Load and tokenize
-    words = load_data()
+    random.seed(args.seed)
+    np.random.seed(args.seed)
 
-    # Build vocabulary
+    words = load_data()
     data, idx_to_word, word_to_idx, vocab_words, freq = make_vocabulary(words, args)
 
-    # Subsample frequent words (returns filtered corpus + word frequencies)
-    data, word_freqs = subsampling(data, freq, idx_to_word, len(vocab_words), args)
-
-    # Precompute unigram^(3/4) distribution for negative sampling
+    keep_prob, word_freqs = compute_keep_prob(freq, idx_to_word, len(vocab_words), args)
     noise_dist = build_noise_dist(word_freqs)
 
-    # Initialize embedding matrices
-    W_in, W_out = build_model(len(vocab_words), args.embed_dim)
+    W_in, W_out = build_model(len(vocab_words), args.embed_dim, args.seed)
 
-    # Train
-    train(data, noise_dist, W_in, W_out, args)
+    train(data, keep_prob, noise_dist, W_in, W_out, args)
 
-    # Evaluate nearest neighbours
-    nearest_neighbours("king",    word_to_idx, idx_to_word, W_in)
-    nearest_neighbours("paris",   word_to_idx, idx_to_word, W_in)
-    nearest_neighbours("science", word_to_idx, idx_to_word, W_in)
-
-    # Save embeddings and vocabulary
-    np.save("embeddings_W_in.npy",  W_in)
-    np.save("embeddings_W_out.npy", W_out)
-    with open("vocab.txt", "w") as f:
-        for i in range(len(vocab_words)):
-            f.write(idx_to_word[i] + "\n")
-    print("\nEmbeddings saved.")
+    save_final(W_in, W_out, idx_to_word, vocab_words, args)
