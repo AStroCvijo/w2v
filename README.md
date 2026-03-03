@@ -82,7 +82,7 @@ python eval.py --benchmark-similarity combined.tab
 python eval.py --benchmark-analogy questions-words.txt --benchmark-similarity combined.tab
 ```
 
-Expected results on text8 with `--epochs 5 --embed-dim 200`:
+Results training on text8 with `--epochs 5 --embed-dim 200`:
 
 | Benchmark | Score |
 |---|---|
