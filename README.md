@@ -82,9 +82,13 @@ python eval.py --benchmark-similarity combined.tab
 python eval.py --benchmark-analogy questions-words.txt --benchmark-similarity combined.tab
 ```
 
-Results training on text8 with `--epochs 5 --embed-dim 200`:
+Results on text8 across configurations:
 
-| Benchmark | Score |
-|---|---|
-| Analogy (overall) | ~29.2% |
-| WordSim-353 ρ | ~0.7 |
+| epochs | embed-dim | neg-k | Analogy % | WordSim ρ |
+|--------|-----------|-------|-----------|-----------|
+| 5      | 200       | 5     | 29.2%     | 0.700     |
+| 5      | 200       | 10    | 32.2%     | 0.706     |
+| 5      | 300       | 5     | 29.2%     | 0.701     |
+| 10     | 200       | 5     | 37.8%     | 0.731     |
+| 10     | 200       | 10    | **42.7%** | 0.720     |
+| 10     | 300       | 10    | 39.3%     | **0.731** |

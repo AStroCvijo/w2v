@@ -69,7 +69,7 @@ def main():
             print(f"  [skipping training — {w_in} already exists]\n")
         else:
             run([
-                sys.executable, "main.py",
+                sys.executable, "-u", "main.py",
                 "--epochs",              str(cfg["epochs"]),
                 "--embed-dim",           str(cfg["embed_dim"]),
                 "--neg-k",               str(cfg["neg_k"]),
@@ -81,7 +81,7 @@ def main():
             ])
 
         eval_cmd = [
-            sys.executable, "eval.py",
+            sys.executable, "-u", "eval.py",
             "--w-in-path",  w_in,
             "--vocab-path", vocab,
         ]
